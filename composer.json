@@ -10,5 +10,20 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {},
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "HelloBase\\": "src/HelloBase",
+            "Thrift\\": "bridge/Thrift"
+        },
+        "classmap": [
+            "bridge/Hbase"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    }
 }
