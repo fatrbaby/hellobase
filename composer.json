@@ -1,0 +1,14 @@
+{
+    "name": "fatrbaby/hellobase",
+    "description": "PHP HBase Client via Thrift",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fatrbaby",
+            "email": "fatrbaby@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
