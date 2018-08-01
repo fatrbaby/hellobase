@@ -2,6 +2,7 @@
 
 namespace HelloBase;
 
+use Hbase\TRowResult;
 use HelloBase\Contracts\Table as TableContract;
 
 class Table implements TableContract
@@ -35,6 +36,15 @@ class Table implements TableContract
 
     public function row(string $key, array $columns = [], $timestamp = null): array
     {
+        $client = $this->connection->getClient();
+
+        if (is_null($timestamp)) {
+            $data = $client->getRowWithColumns($this->table, $key, $columns, []);
+        } else {
+            $data = $client->getRowWithColumnsTs($this->table, $key, $columns, $timestamp, []);
+        }
+
+        return count($data) ? $this->formatRow($data[0]) : [];
     }
 
     public function rows(string $key, array $columns = [], $timestamp = null): array
@@ -53,5 +63,27 @@ class Table implements TableContract
     public function getConnection(): Connection
     {
         return $this->connection;
+    }
+
+    protected function formatRows(array $result)
+    {
+        $formatted = array();
+
+        foreach ($result as $row) {
+            $formatted[$row->row] = $this->formatRow($row);
+        }
+
+        return $formatted;
+    }
+
+    protected function formatRow(TRowResult $result)
+    {
+        $formatted = [];
+
+        foreach ($result->columns as $column => $value) {
+            $formatted[$column] = $value->value;
+        }
+
+        return $formatted;
     }
 }
