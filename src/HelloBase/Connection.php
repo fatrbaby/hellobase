@@ -43,9 +43,9 @@ class Connection implements ConnectionContract
      * Connection constructor.
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
-        $this->config = $config;
+        $this->setConfig($config);
     }
 
     public function connect()
@@ -120,18 +120,18 @@ class Connection implements ConnectionContract
     public function setConfig(array $config)
     {
         $this->config = array_merge([
-            'host' => '127.0.0.1',
+            'host' => 'localhost',
             'port' => '9090',
             'persist' => false,
             'debug_handler' => null,
             'send_timeout' => 1000000,
             'recv_timeout' => 1000000,
-            'transport' => 'framed',
+            'transport' => 'binary',
             'protocol' => 'binary_accelerated',
         ], $config);
     }
 
-    protected function getConfig(): array
+    public function getConfig(): array
     {
         return $this->config;
     }
