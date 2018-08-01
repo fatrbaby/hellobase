@@ -10,5 +10,24 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.*.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "HelloBase\\": "src/HelloBase",
+            "Thrift\\": "bridge/Thrift"
+        },
+        "classmap": [
+            "bridge/Hbase"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    }
 }
