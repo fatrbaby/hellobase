@@ -8,10 +8,8 @@ use Hbase\Mutation;
 
 class Command
 {
-    protected $size = 0;
     protected $table;
     protected $mutations = [];
-    protected $mutationCount = 0;
 
     /**
      * Command constructor.
@@ -22,7 +20,7 @@ class Command
         $this->table = $table;
     }
 
-    public function put($row, $data)
+    public function put($row, array $data)
     {
         if (!isset($this->mutations[$row])) {
             $this->mutations[$row] = [];
@@ -35,14 +33,6 @@ class Command
                 'isDelete' => false
             ]);
         }
-
-        $this->mutationCount += count($data);
-
-        if ($this->size && $this->mutationCount > $this->size) {
-            return $this->execute();
-        }
-
-        return 0;
     }
 
     /**
@@ -51,13 +41,13 @@ class Command
      */
     public function execute()
     {
-        $bms = [];
+        $commands = [];
 
         foreach ($this->mutations as $row => $mutation) {
-            $bms[] = new BatchMutation(['row' => $row, 'mutations' => $mutation]);
+            $commands[] = new BatchMutation(['row' => $row, 'mutations' => $mutation]);
         }
 
-        if (empty($bms)) {
+        if (empty($commands)) {
             return 0;
         }
 
@@ -67,11 +57,18 @@ class Command
         $client = $this->table->getConnection()->getClient();
 
         try {
-            $client->mutateRows($this->table->getTable(), $bms, []);
+            $client->mutateRows($this->table->getTable(), $commands, []);
         } catch (\Exception $exception) {
             throw $exception;
         }
 
-        return count($bms);
+        $this->reset();
+
+        return count($commands);
+    }
+
+    public function reset()
+    {
+        $this->mutations = [];
     }
 }

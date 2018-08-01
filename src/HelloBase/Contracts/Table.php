@@ -4,7 +4,7 @@ namespace HelloBase\Contracts;
 
 interface Table
 {
-    public function put(string $key, $value): bool ;
+    public function put(string $key, array $value): bool ;
 
     public function row(string $key, array $columns = [], $timestamp = null): array;
 

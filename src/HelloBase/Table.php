@@ -17,17 +17,17 @@ class Table implements TableContract
 
     /**
      * @param string $key
-     * @param $values
+     * @param array $values
      * @return bool
      * @throws \Exception
      */
-    public function put(string $key, $values): bool
+    public function put(string $key, array $values): bool
     {
         $command = new Command($this);
 
         try {
             $command->put($key, $values);
-            return true;
+            return $command->execute() > 0;
         } catch (\Exception $exception) {
             throw $exception;
         }

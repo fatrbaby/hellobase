@@ -126,7 +126,7 @@ class Connection implements ConnectionContract
             'debug_handler' => null,
             'send_timeout' => 1000000,
             'recv_timeout' => 1000000,
-            'transport' => 'binary',
+            'transport' => 'buffered',
             'protocol' => 'binary_accelerated',
         ], $config);
     }
