@@ -11,4 +11,6 @@ interface Connection
     public function table($name): Table;
 
     public function tables(): array;
+
+    public function createTable($table, array $columnFamilies): bool;
 }

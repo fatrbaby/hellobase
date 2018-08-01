@@ -10,4 +10,15 @@ class ConnectionTest extends TestCase
 
         $this->assertCount(4, $tables);
     }
+
+    public function testCreateTable()
+    {
+        $created = $this->connection->createTable('hellobase', ['hb:']);
+
+        $this->assertTrue($created);
+
+        $tables = $this->connection->tables();
+
+        $this->assertArrayHasKey('hellobase', array_flip($tables));
+    }
 }

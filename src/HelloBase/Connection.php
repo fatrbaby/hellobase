@@ -2,10 +2,12 @@
 
 namespace HelloBase;
 
+use Hbase\ColumnDescriptor;
 use Hbase\HbaseClient;
 use Hbase\IOError;
 use HelloBase\Contracts\Connection as ConnectionContract;
 use HelloBase\Contracts\Table;
+use HelloBase\Supports\Arr;
 use Thrift\Exception\TException;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Protocol\TBinaryProtocolAccelerated;
@@ -110,6 +112,21 @@ class Connection implements ConnectionContract
         } catch (IOError $error) {
             throw $error;
         }
+    }
+
+    public function createTable($table, array $columnFamilies): bool
+    {
+        $descriptors = [];
+
+        foreach ($columnFamilies as $column) {
+            $descriptors[] = new ColumnDescriptor([
+                'name' => trim($column, ':') . ':',
+            ]);
+        }
+
+        $this->client->createTable($table, $descriptors);
+
+        return true;
     }
 
     public function getClient(): HbaseClient
