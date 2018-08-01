@@ -1,6 +1,13 @@
 {
     "name": "fatrbaby/hellobase",
-    "description": "PHP HBase Client via Thrift",
+    "description": "Hbase client php wrapper, via thirft",
+    "keywords": [
+        "hbase",
+        "hadoop",
+        "thirft",
+        "big data",
+        "fatrbaby"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
