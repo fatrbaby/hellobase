@@ -34,21 +34,30 @@ class Table implements TableContract
         }
     }
 
-    public function row(string $key, array $columns = [], $timestamp = null): array
+    public function row(string $row, array $columns = [], $timestamp = null): array
     {
         $client = $this->connection->getClient();
 
         if (is_null($timestamp)) {
-            $data = $client->getRowWithColumns($this->table, $key, $columns, []);
+            $data = $client->getRowWithColumns($this->table, $row, $columns, []);
         } else {
-            $data = $client->getRowWithColumnsTs($this->table, $key, $columns, $timestamp, []);
+            $data = $client->getRowWithColumnsTs($this->table, $row, $columns, $timestamp, []);
         }
 
         return count($data) ? $this->formatRow($data[0]) : [];
     }
 
-    public function rows(string $key, array $columns = [], $timestamp = null): array
+    public function rows(array $rows, array $columns = [], $timestamp = null): array
     {
+        $client = $this->connection->getClient();
+
+        if (!is_null($timestamp)) {
+            $data = $client->getRowsWithColumnsTs($this->table, $rows, $columns, $timestamp, []);
+        } else {
+            $data = $client->getRowsWithColumns($this->table, $rows, $columns, []);
+        }
+
+        return $this->formatRows($data);
     }
 
     public function scan($start = null, $stop = null, $prefix = null, $columns = null)

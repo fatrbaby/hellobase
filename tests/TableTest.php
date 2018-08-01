@@ -20,4 +20,13 @@ class TableTest extends TestCase
 
         $this->assertArrayHasKey('cf:name', $row);
     }
+
+    public function testRows()
+    {
+        $table = $this->connection->table('mytable');
+
+        $rows = $table->rows(['first', 'third', 'fourth']);
+        
+        $this->assertCount(3, $rows);
+    }
 }
