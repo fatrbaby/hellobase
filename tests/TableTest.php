@@ -26,7 +26,16 @@ class TableTest extends TestCase
         $table = $this->connection->table('mytable');
 
         $rows = $table->rows(['first', 'third', 'fourth']);
-        
+
         $this->assertCount(3, $rows);
+    }
+
+    public function testScan()
+    {
+        $table = $this->connection->table('mytable');
+
+        foreach ($table->scan() as $row) {
+            $this->assertNotEmpty($row);
+        }
     }
 }

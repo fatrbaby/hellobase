@@ -3,12 +3,14 @@
 namespace HelloBase;
 
 use Hbase\TRowResult;
+use Hbase\TScan;
 use HelloBase\Contracts\Table as TableContract;
 
 class Table implements TableContract
 {
     protected $table;
     protected $connection;
+    protected $startRow = 0;
 
     public function __construct(string $table, Connection $connection)
     {
@@ -60,8 +62,32 @@ class Table implements TableContract
         return $this->formatRows($data);
     }
 
-    public function scan($start = null, $stop = null, $prefix = null, $columns = null)
+    /**
+     * @param array $columns
+     * @param array $with
+     * @return \Generator
+     * @throws \Hbase\IOError
+     * @throws \Hbase\IllegalArgument
+     */
+    public function scan(array $columns = [], array $with = [])
     {
+        $client = $this->connection->getClient();
+        $scannerId = $client->scannerOpen($this->table, $this->startRow, $columns, $with);
+
+        try {
+            while ($list = $client->scannerGetList($scannerId, 50)) {
+                foreach ($list as $result) {
+                    $this->startRow = $result->row;
+                    yield $this->formatRow($result);
+                }
+            }
+
+            $client->scannerClose($scannerId);
+        } catch (\Exception $exception) {
+            $client->scannerClose($scannerId);
+
+            throw $exception;
+        }
     }
 
     public function getTable()
@@ -74,22 +100,22 @@ class Table implements TableContract
         return $this->connection;
     }
 
-    protected function formatRows(array $result)
+    protected function formatRows(array $rows)
     {
         $formatted = array();
 
-        foreach ($result as $row) {
+        foreach ($rows as $row) {
             $formatted[$row->row] = $this->formatRow($row);
         }
 
         return $formatted;
     }
 
-    protected function formatRow(TRowResult $result)
+    protected function formatRow(TRowResult $row)
     {
         $formatted = [];
 
-        foreach ($result->columns as $column => $value) {
+        foreach ($row->columns as $column => $value) {
             $formatted[$column] = $value->value;
         }
 
