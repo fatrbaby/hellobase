@@ -19,6 +19,12 @@ class TestCase extends BaseTestCase
         parent::setUp();
         $this->connection = new Connection([]);
         $this->connection->connect();
+
+        $tables = $this->connection->tables();
+
+        if (!in_array('hellobase', $tables)) {
+            $this->connection->createTable('hellobase', ['hb:']);
+        }
     }
 
     public function tearDown()

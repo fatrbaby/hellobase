@@ -2,9 +2,10 @@
 
 namespace HelloBase;
 
+use Hbase\IOError;
+use Hbase\TIncrement;
 use Hbase\TRowResult;
-use Hbase\TScan;
-use HelloBase\Contracts\Table as TableContract;
+use HelloBase\Contracts\Table as TableContract;;
 
 class Table implements TableContract
 {
@@ -88,6 +89,31 @@ class Table implements TableContract
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param string $row
+     * @param string $column
+     * @param int $amount
+     * @return int
+     * @throws \Hbase\IOError
+     */
+    public function increment(string $row, string $column, int $amount): bool
+    {
+        $increment = new TIncrement([
+            'table' => $this->table,
+            'row' => $row,
+            'column' => $column,
+            'ammount' => $amount,
+        ]);
+
+        try {
+            $this->connection->getClient()->increment($increment);
+        } catch (IOError $error) {
+            throw $error;
+        }
+
+        return true;
     }
 
     public function getTable()
