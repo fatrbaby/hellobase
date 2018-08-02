@@ -98,7 +98,7 @@ class Table implements TableContract
      * @return int
      * @throws \Hbase\IOError
      */
-    public function increment(string $row, string $column, int $amount): bool
+    public function increment(string $row, string $column, int $amount = 1): bool
     {
         $increment = new TIncrement([
             'table' => $this->table,

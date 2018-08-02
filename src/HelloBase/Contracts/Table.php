@@ -12,5 +12,5 @@ interface Table
 
     public function scan(array $columns = [], array $with = []);
 
-    public function increment(string $row, string $column, int $amount): bool;
+    public function increment(string $row, string $column, int $amount = 1): bool;
 }
