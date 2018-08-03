@@ -41,6 +41,11 @@ class Connection implements ConnectionContract
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $tables = [];
+
+    /**
      * Connection constructor.
      * @param array $config
      */
@@ -106,8 +111,12 @@ class Connection implements ConnectionContract
      */
     public function tables(): array
     {
+        if ($this->tables) {
+            return $this->tables;
+        }
+
         try {
-            return $this->client->getTableNames();
+            return $this->tables = $this->client->getTableNames();
         } catch (IOError $error) {
             throw $error;
         }

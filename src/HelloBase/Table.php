@@ -26,9 +26,8 @@ class Table implements TableContract
      */
     public function put(string $key, array $values): bool
     {
-        $putter = new Putter($this);
-
         try {
+            $putter = new Putter($this);
             $putter->pick($key, $values);
             return $putter->send() > 0;
         } catch (\Exception $exception) {
@@ -135,7 +134,7 @@ class Table implements TableContract
 
     protected function formatRows(array $rows)
     {
-        $formatted = array();
+        $formatted = [];
 
         foreach ($rows as $row) {
             $formatted[$row->row] = $this->formatRow($row);
