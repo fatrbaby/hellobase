@@ -40,8 +40,11 @@ $table->row('row-name', ['column1', ...]);
 # get rows
 $table->rows(['row-name1', 'row-name2', ...], ['column1', ...]);
 
+# increment 
+$table->increment('row-name', 'column-name', int amount)
+
 # scan
-foreach($table->scan(<['column1', ...]>, <['condition1', ...]>) as $row) {
+foreach($table->scan(<startRow>, <stopRow>, <['column1', ...]>, <['condition1', ...]>) as $row => $columns) {
     // do something
 }
 

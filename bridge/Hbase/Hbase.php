@@ -687,9 +687,9 @@ interface HbaseIf {
   public function append(\Hbase\TAppend $append);
   /**
    * Atomically checks if a row/family/qualifier value matches the expected
-   * value. If it does, it adds the corresponding mutation operation for put.
+   * value. If it does, it adds the corresponding mutation operation for pick.
    * 
-   * @return true if the new put was executed, false otherwise
+   * @return true if the new pick was executed, false otherwise
    * 
    * @param string $tableName name of table
    * 
@@ -701,7 +701,7 @@ interface HbaseIf {
    * provided the check is for the non-existence of the
    * column in question
    * 
-   * @param \Hbase\Mutation $mput mutation for the put
+   * @param \Hbase\Mutation $mput mutation for the pick
    * 
    * @param array $attributes Mutation attributes
    * 
@@ -8206,7 +8206,7 @@ class Hbase_checkAndPut_args extends TBase {
    */
   public $value = null;
   /**
-   * mutation for the put
+   * mutation for the pick
    * 
    * @var \Hbase\Mutation
    */

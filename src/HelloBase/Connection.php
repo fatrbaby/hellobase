@@ -7,7 +7,6 @@ use Hbase\HbaseClient;
 use Hbase\IOError;
 use HelloBase\Contracts\Connection as ConnectionContract;
 use HelloBase\Contracts\Table;
-use HelloBase\Supports\Arr;
 use Thrift\Exception\TException;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Protocol\TBinaryProtocolAccelerated;
@@ -151,5 +150,10 @@ class Connection implements ConnectionContract
     public function getConfig(): array
     {
         return $this->config;
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }

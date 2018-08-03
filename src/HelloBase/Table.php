@@ -11,7 +11,6 @@ class Table implements TableContract
 {
     protected $table;
     protected $connection;
-    protected $startRow = 0;
 
     public function __construct(string $table, Connection $connection)
     {
@@ -27,11 +26,11 @@ class Table implements TableContract
      */
     public function put(string $key, array $values): bool
     {
-        $command = new Command($this);
+        $putter = new Putter($this);
 
         try {
-            $command->put($key, $values);
-            return $command->execute() > 0;
+            $putter->pick($key, $values);
+            return $putter->send() > 0;
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -64,22 +63,30 @@ class Table implements TableContract
     }
 
     /**
+     * @param string $start
+     * @param string $stop
      * @param array $columns
      * @param array $with
      * @return \Generator
-     * @throws \Hbase\IOError
+     * @throws IOError
      * @throws \Hbase\IllegalArgument
      */
-    public function scan(array $columns = [], array $with = [])
+    public function scan(string $start = '', string $stop = '', array $columns = [], array $with = [])
     {
         $client = $this->connection->getClient();
-        $scannerId = $client->scannerOpen($this->table, $this->startRow, $columns, $with);
+
+        $scannerId = $client->scannerOpenWithStop(
+            $this->table,
+            $start,
+            $stop,
+            $columns,
+            $with
+        );
 
         try {
             while ($list = $client->scannerGetList($scannerId, 50)) {
                 foreach ($list as $result) {
-                    $this->startRow = $result->row;
-                    yield $this->formatRow($result);
+                    yield $result->row => $this->formatRow($result);
                 }
             }
 
@@ -95,7 +102,7 @@ class Table implements TableContract
      * @param string $row
      * @param string $column
      * @param int $amount
-     * @return int
+     * @return bool
      * @throws \Hbase\IOError
      */
     public function increment(string $row, string $column, int $amount = 1): bool

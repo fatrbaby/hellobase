@@ -6,13 +6,13 @@ use Hbase\BatchMutation;
 use Hbase\HbaseClient;
 use Hbase\Mutation;
 
-class Command
+class Putter
 {
     protected $table;
     protected $mutations = [];
 
     /**
-     * Command constructor.
+     * Putter constructor.
      * @param Table $table
      */
     public function __construct(Table $table)
@@ -20,7 +20,7 @@ class Command
         $this->table = $table;
     }
 
-    public function put($row, array $data)
+    public function pick($row, array $data)
     {
         if (!isset($this->mutations[$row])) {
             $this->mutations[$row] = [];
@@ -39,7 +39,7 @@ class Command
      * @return int
      * @throws \Exception
      */
-    public function execute()
+    public function send()
     {
         $commands = [];
 
