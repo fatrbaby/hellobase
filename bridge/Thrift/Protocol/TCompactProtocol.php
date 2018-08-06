@@ -636,7 +636,7 @@ class TCompactProtocol extends TProtocol
     $hi = ($hi >> 1) ^ $xorer;
     $lo = $lo ^ $xorer;
 
-    // Now put $hi and $lo back together
+    // Now pick $hi and $lo back together
     $isNeg = $hi < 0 || $hi & 0x80000000;
 
     // Check for a negative

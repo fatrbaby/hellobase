@@ -57,7 +57,7 @@ class TSocket extends TTransport
   /**
    * Send timeout in seconds.
    *
-   * Combined with sendTimeoutUsec this is used for execute timeouts.
+   * Combined with sendTimeoutUsec this is used for send timeouts.
    *
    * @var int
    */
@@ -66,7 +66,7 @@ class TSocket extends TTransport
   /**
    * Send timeout in microseconds.
    *
-   * Combined with sendTimeoutSec this is used for execute timeouts.
+   * Combined with sendTimeoutSec this is used for send timeouts.
    *
    * @var int
    */
@@ -139,7 +139,7 @@ class TSocket extends TTransport
   }
 
   /**
-   * Sets the execute timeout.
+   * Sets the send timeout.
    *
    * @param int $timeout  Timeout in milliseconds.
    */

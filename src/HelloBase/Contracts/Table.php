@@ -10,7 +10,7 @@ interface Table
 
     public function rows(array $rows, array $columns = [], $timestamp = null): array;
 
-    public function scan(array $columns = [], array $with = []);
+    public function scan(string $start = '', string $stop = '', array $columns = [], array $with = []);
 
     public function increment(string $row, string $column, int $amount = 1): bool;
 }

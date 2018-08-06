@@ -4,8 +4,11 @@ namespace HelloBase\Supports;
 
 class Integer
 {
-    public static function longToInt(string $bin)
+    public static function binToInt(string $bin): int
     {
-        return unpack('N2', $bin);
+        list($higher, $lower) = array_values(unpack('N2', $bin));
+        $unPackedValue = $higher << 32 | $lower;
+
+        return $unPackedValue;
     }
 }
