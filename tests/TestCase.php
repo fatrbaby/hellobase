@@ -17,6 +17,7 @@ class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->connection = new Connection([]);
         $this->connection->connect();
 
