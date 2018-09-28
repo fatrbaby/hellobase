@@ -24,3 +24,9 @@ echo \HelloBase\Supports\Integer::binToInt($raw['hb:counter']), PHP_EOL;
 
 $connection->close();
 
+echo gettype(\HelloBase\Supports\Integer::intToBin(5)), PHP_EOL;
+
+$a = pack("J", 5);
+
+var_dump($a);
+
