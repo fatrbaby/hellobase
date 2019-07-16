@@ -1,6 +1,6 @@
 # Hellobase
 
-> hello Hbase
+> H(ello)base
 
 ## installation
 
