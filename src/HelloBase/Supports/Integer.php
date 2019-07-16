@@ -18,7 +18,8 @@ class Integer
      * @param $var
      * @return int|mixed
      */
-    public static function intToBin($var) {
+    public static function intToBin($var)
+    {
         $f = is_int($var) ? "pack" : "unpack";
         $var = $f("J", $var);
 

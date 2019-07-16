@@ -2,12 +2,13 @@
 
 namespace HelloBase;
 
+use Exception;
 use Hbase\ColumnDescriptor;
 use Hbase\HbaseClient;
 use Hbase\IOError;
 use HelloBase\Contracts\Connection as ConnectionContract;
-use HelloBase\Contracts\Table;
-use Thrift\Exception\TException;
+use HelloBase\Contracts\Table as TableContract;
+use InvalidArgumentException;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Protocol\TCompactProtocol;
@@ -18,6 +19,13 @@ use Thrift\Transport\TTransport;
 
 class Connection implements ConnectionContract
 {
+    const TRANSPORT_BUFFERED = 'buffered';
+    const TRANSPORT_FRAMED = 'framed';
+
+    const PROTOCOL_BINARY = 'binary';
+    const PROTOCOL_BINARY_ACCELERATED = 'binary_accelerated';
+    const PROTOCOL_COMPACT = 'compact';
+
     protected $config;
 
     /**
@@ -46,12 +54,21 @@ class Connection implements ConnectionContract
     protected $tables = [];
 
     /**
+     * @var bool
+     */
+    protected $autoConnect = false;
+
+    /**
      * Connection constructor.
      * @param array $config
      */
     public function __construct(array $config = [])
     {
-        $this->setConfig($config);
+        $this->prepareConfig($config);
+
+        if ($this->autoConnect) {
+            $this->connect();
+        }
     }
 
     public function connect()
@@ -61,18 +78,35 @@ class Connection implements ConnectionContract
         $this->socket->setSendTimeout($config['send_timeout']);
         $this->socket->setRecvTimeout($config['recv_timeout']);
 
-        if ($config['transport'] == 'framed') {
-            $this->transport = new TFramedTransport($this->socket);
-        } else {
-            $this->transport = new TBufferedTransport($this->socket);
+        switch ($config['transport']) {
+            case self::TRANSPORT_BUFFERED:
+                $this->transport = new TFramedTransport($this->socket);
+                break;
+            case self::TRANSPORT_FRAMED:
+                $this->transport = new TBufferedTransport($this->socket);
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf(
+                    "Invalid transport config '%s'",
+                    $config['transport']
+                ));
         }
 
-        if ($config['protocol'] == 'binary_accelerated') {
-            $this->protocol = new TBinaryProtocolAccelerated($this->transport);
-        } elseif ($config['protocol'] == 'binary') {
-            $this->protocol = new TBinaryProtocol($this->transport);
-        } else {
-            $this->protocol = new TCompactProtocol($this->transport);
+        switch ($config['protocol']) {
+            case self::PROTOCOL_BINARY_ACCELERATED:
+                $this->protocol = new TBinaryProtocolAccelerated($this->transport);
+                break;
+            case self::PROTOCOL_BINARY:
+                $this->protocol = new TBinaryProtocol($this->transport);
+                break;
+            case self::PROTOCOL_COMPACT:
+                $this->protocol = new TCompactProtocol($this->transport);
+               break;
+            default:
+                throw new InvalidArgumentException(sprintf(
+                    "Invalid protocol config: '%s'",
+                    $config['protocol']
+                ));
         }
 
         $this->client = new HbaseClient($this->protocol);
@@ -83,7 +117,7 @@ class Connection implements ConnectionContract
 
         try {
             $this->transport->open();
-        } catch (TException $exception) {
+        } catch (Exception $exception) {
             $this->socket->close();
         }
     }
@@ -99,9 +133,9 @@ class Connection implements ConnectionContract
         $this->socket->close();
     }
 
-    public function table($name): Table
+    public function table($name): TableContract
     {
-        return new \HelloBase\Table($name, $this);
+        return new Table($name, $this);
     }
 
     /**
@@ -142,17 +176,18 @@ class Connection implements ConnectionContract
         return $this->client;
     }
 
-    public function setConfig(array $config)
+    public function prepareConfig(array $config)
     {
         $this->config = array_merge([
             'host' => 'localhost',
             'port' => '9090',
+            'auto_connect' => false,
             'persist' => false,
             'debug_handler' => null,
             'send_timeout' => 1000000,
             'recv_timeout' => 1000000,
-            'transport' => 'buffered',
-            'protocol' => 'binary_accelerated',
+            'transport' => self::TRANSPORT_BUFFERED,
+            'protocol' => self::PROTOCOL_BINARY_ACCELERATED,
         ], $config);
     }
 

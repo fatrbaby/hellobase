@@ -14,12 +14,13 @@ use HelloBase\Connection;
 $config = [
     'host' => 'localhost',
     'port' => '9090',
+    'auto_connect' => false,
     'persist' => false,
     'debug_handler' => null,
     'send_timeout' => 1000000,
     'recv_timeout' => 1000000,
-    'transport' => 'buffered',
-    'protocol' => 'binary_accelerated',
+    'transport' => Connection::TRANSPORT_BUFFERED,
+    'protocol' => Connection::PROTOCOL_BINARY_ACCELERATED,
 ];
 
 $connection = new Connection($config);

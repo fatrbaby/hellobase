@@ -2,6 +2,7 @@
 
 namespace HelloBase;
 
+use Exception;
 use Hbase\BatchMutation;
 use Hbase\HbaseClient;
 use Hbase\Mutation;
@@ -37,7 +38,7 @@ class Putter
 
     /**
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     public function send()
     {
@@ -58,7 +59,7 @@ class Putter
 
         try {
             $client->mutateRows($this->table->getTable(), $commands, []);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw $exception;
         }
 

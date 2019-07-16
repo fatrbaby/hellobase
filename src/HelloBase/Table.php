@@ -2,10 +2,13 @@
 
 namespace HelloBase;
 
+use Exception;
 use Hbase\IOError;
 use Hbase\TIncrement;
 use Hbase\TRowResult;
-use HelloBase\Contracts\Table as TableContract;;
+use HelloBase\Contracts\Table as TableContract;
+
+;
 
 class Table implements TableContract
 {
@@ -22,7 +25,7 @@ class Table implements TableContract
      * @param string $key
      * @param array $values
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function put(string $key, array $values): bool
     {
@@ -30,7 +33,7 @@ class Table implements TableContract
             $putter = new Putter($this);
             $putter->pick($key, $values);
             return $putter->send() > 0;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw $exception;
         }
     }
@@ -90,7 +93,7 @@ class Table implements TableContract
             }
 
             $client->scannerClose($scannerId);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $client->scannerClose($scannerId);
 
             throw $exception;
