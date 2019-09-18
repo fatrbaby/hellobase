@@ -58,6 +58,16 @@ foreach($table->scan(<startRow>, <stopRow>, <['column1', ...]>, <['condition1', 
 $ cd docker
 $ docker-compose up -d
 
+# create table in docker
+$ docker exec -it hbase bash
+$ hbase shell
+
+> create 'hellobase', 'hb'
+> list
+> quit
+
+$ exit 
+
 # run test
 cd ../
 vendor/bin/phpunit

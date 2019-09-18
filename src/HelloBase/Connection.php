@@ -80,10 +80,10 @@ class Connection implements ConnectionContract
 
         switch ($config['transport']) {
             case self::TRANSPORT_BUFFERED:
-                $this->transport = new TFramedTransport($this->socket);
+                $this->transport = new TBufferedTransport($this->socket);
                 break;
             case self::TRANSPORT_FRAMED:
-                $this->transport = new TBufferedTransport($this->socket);
+                $this->transport = new TFramedTransport($this->socket);
                 break;
             default:
                 throw new InvalidArgumentException(sprintf(
