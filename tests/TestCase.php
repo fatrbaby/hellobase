@@ -18,7 +18,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->connection = new Connection([]);
+        $this->connection = new Connection();
         $this->connection->connect();
 
         $tables = $this->connection->tables();

@@ -2,7 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$connection = new \HelloBase\Connection();
+$connection = new \HelloBase\Connection(['port' => 9090]);
 $connection->connect();
 
 print_r($connection->tables());

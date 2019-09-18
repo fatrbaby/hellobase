@@ -51,7 +51,18 @@ foreach($table->scan(<startRow>, <stopRow>, <['column1', ...]>, <['condition1', 
 
 ```
 
-## todo
+## run test
 
+```shell script
+# create hbase service by docker (docker-compose)
+$ cd docker
+$ docker-compose up -d
+
+# run test
+cd ../
+vendor/bin/phpunit
+```
+
+## TODO
 more features
 

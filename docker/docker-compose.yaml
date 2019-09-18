@@ -1,0 +1,14 @@
+version: '2.0'
+services:
+  mosquitto:
+    image: dajobe/hbase
+    container_name: hbase
+    volumes:
+      - ./data:/data
+    ports:
+      - 8080:8080
+      - 8085:8085
+      - 9090:9090
+      - 9095:9095
+      - 2181:2181
+      - 16010:16010
